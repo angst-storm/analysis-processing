@@ -1,3 +1,13 @@
-from django.shortcuts import render
+from .models import PDFFile
+from rest_framework import generics
+from . import serializers
 
-# Create your views here.
+
+class PDFFileList(generics.ListCreateAPIView):
+    queryset = PDFFile.objects.all()
+    serializer_class = serializers.PDFFileSerializer
+
+
+class PDFFileDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = PDFFile.objects.all()
+    serializer_class = serializers.PDFFileSerializer
