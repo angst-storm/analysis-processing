@@ -3,6 +3,7 @@ from .models import BloodTest
 from django.shortcuts import render
 from rest_framework import generics
 from .serializers import BloodTestSerializer
+from django.views.decorators.csrf import csrf_exempt
 
 
 class BloodTestList(generics.ListAPIView):
@@ -15,6 +16,7 @@ class BloodTestDetail(generics.RetrieveAPIView):
     serializer_class = BloodTestSerializer
 
 
+@csrf_exempt
 def blood_test_detail(request):
     if request.method == 'POST':
         blood_test_form = BloodTestForm(request.POST, request.FILES)
