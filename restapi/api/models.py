@@ -1,12 +1,11 @@
 from django.db import models
-import os
+from django.utils import timezone
+from django.contrib.auth.models import User
 
 
-def analyzes_path():
-    directory_path = os.path.abspath(__file__)
-    return directory_path[:directory_path.rfind('\\')] + '\\analyzes'
-
-
-class PDFFile(models.Model):
-    title = models.CharField(max_length=100)
-    file = models.FileField(upload_to=analyzes_path())
+class BloodTest(models.Model):
+    # user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='blog_posts')
+    user = models.CharField(max_length=80, default='unknown')
+    submit = models.DateTimeField(default=timezone.now)
+    pdf_file_name = models.CharField(max_length=80, default='not initialized')
+    parsing_result = models.TextField(default='no result')

@@ -1,8 +1,8 @@
 from rest_framework import serializers
-from .models import PDFFile
+from .models import BloodTest
 
 
-class PDFFileSerializer(serializers.ModelSerializer):
+class BloodTestSerializer(serializers.ModelSerializer):
     class Meta:
-        model = PDFFile
-        fields = ['id', 'title', 'file']
+        model = BloodTest
+        fields = ['id', 'user', 'submit', 'pdf_file_name', 'parsing_result']
