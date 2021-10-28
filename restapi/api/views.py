@@ -4,6 +4,7 @@ from django.shortcuts import render
 from rest_framework import generics
 from .serializers import BloodTestSerializer
 from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponse
 
 
 class BloodTestList(generics.ListAPIView):
@@ -25,6 +26,8 @@ def blood_test_detail(request):
                                        pdf_file_name=str(blood_test_form['pdf_file'].value()),
                                        parsing_result='Excellent!')
             new_blood_test.save()
+            return HttpResponse(new_blood_test.id)
+        return HttpResponse('The file isn\'t PDF')
     else:
         blood_test_form = BloodTestForm()
-    return render(request, 'test_form.html', {'form': blood_test_form, 'error': blood_test_form})
+        return render(request, 'test_form.html', {'form': blood_test_form, 'error': blood_test_form})
