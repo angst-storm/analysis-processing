@@ -30,3 +30,10 @@
 
 Скачать установщик Tesseract [здесь](https://github.com/UB-Mannheim/tesseract/wiki) и установить в папку
 analysis-processing/Tesseract-OCR (при установке в `Additional language data` обязательно выбрать пункт `Russian`)
+
+## Как запустить контейнер Docker
+
+- Установить Docker Desktop [тут](https://hub.docker.com/editions/community/docker-ce-desktop-windows)
+- Ввести команду `docker-compose -f docker-compose.yml up -d`
+- Приложение будет работать точно так же, как и при запуске через инструкцию выше
+- При запуске контейнера Debug меняется на False, иметь ввиду
