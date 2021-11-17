@@ -1,4 +1,4 @@
-## Инструкция по запуску API на локальном хосте #
+﻿## Инструкция по запуску API на локальном хосте #
 
 При первом открытии проекта в Pycharm и подключении к нему интерпретатора Python в проекте должна была сгенерироваться
 папка venv (виртуальная область Python)
@@ -29,7 +29,7 @@
 ## Инструкция для подключения Tesseract OCR к проекту
 
 Скачать установщик Tesseract [здесь](https://github.com/UB-Mannheim/tesseract/wiki) и установить в папку
-analysis-processing/Tesseract-OCR (при установке в `Additional language data` обязательно выбрать пункт `Russian`)
+analysis-processing\analysis_ocr\tesseract (при установке в `Additional language data` обязательно выбрать пункт `Russian` и при необходимости создать папку tesseract)
 
 ## Как запустить контейнер Docker
 
