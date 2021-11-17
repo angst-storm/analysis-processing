@@ -31,6 +31,12 @@
 Скачать установщик Tesseract [здесь](https://github.com/UB-Mannheim/tesseract/wiki) и установить в папку
 analysis-processing\analysis_ocr\tesseract (при установке в `Additional language data` обязательно выбрать пункт `Russian` и при необходимости создать папку tesseract)
 
+## Инструкция по использованию скрипта
+1. Необходимый файл (в формате .jpg/.pdf) положить в папку с программой
+2. Запустить программу через PyCharm
+3. Ввести в консоль полное название файла (включая расширение)
+4. Получить на выходе файл "done.csv", содержащий обработанную таблицу
+
 ## Как запустить контейнер Docker
 
 - Установить Docker Desktop [тут](https://hub.docker.com/editions/community/docker-ce-desktop-windows)
