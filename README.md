@@ -28,6 +28,7 @@
 
 ## Инструкция для подключения Tesseract OCR к проекту
 
+Скачать Java
 Скачать установщик Tesseract [здесь](https://github.com/UB-Mannheim/tesseract/wiki) и установить в папку
 analysis-processing\analysis_ocr\tesseract (при установке в `Additional language data` обязательно выбрать пункт `Russian` и при необходимости создать папку tesseract)
 
