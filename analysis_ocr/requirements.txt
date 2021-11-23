@@ -1,7 +1,0 @@
-requests==2.26.0
-table-ocr==0.2.5
-pytesseract==0.3.8
-pdf2image==1.16.0
-Pillow==8.3.2
-img2pdf==0.4.3
-Levenshtein

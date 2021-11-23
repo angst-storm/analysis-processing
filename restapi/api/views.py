@@ -1,5 +1,3 @@
-import time
-
 from .forms import BloodTestForm
 from .models import BloodTest
 from django.shortcuts import render
@@ -7,9 +5,9 @@ from rest_framework import generics
 from .serializers import BloodTestSerializer
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
-from .parsers.gag_parser import parse_pdf
 from django.core import exceptions
-import threading
+from threading import Thread
+from parsers.main_parser import parse_pdf
 
 
 class BloodTestList(generics.ListCreateAPIView):
@@ -20,10 +18,10 @@ class BloodTestList(generics.ListCreateAPIView):
         blood_test_form = BloodTestForm(request.POST, request.FILES)
         if blood_test_form.is_valid():
             new_blood_test = BloodTest(client_ip=request.META['REMOTE_ADDR'],
-                                       pdf_file_name=str(blood_test_form['pdf_file'].value()))
+                                       pdf_file=blood_test_form['pdf_file'].value())
             new_blood_test.save()
-            threading.Thread(target=parsing_function,
-                             args=(blood_test_form['pdf_file'].value(), new_blood_test)).start()
+            Thread(target=parsing_function,
+                   args=(new_blood_test.pdf_file.name, new_blood_test)).start()
             return HttpResponse(new_blood_test.id)
         raise exceptions.BadRequest()
 
@@ -44,7 +42,11 @@ def blood_test_detail(request):
     if request.method == 'POST':
         blood_test_form = BloodTestForm(request.POST, request.FILES)
         if blood_test_form.is_valid():
-            return HttpResponse(parse_pdf(blood_test_form['pdf_file'].value()))
+            new_blood_test = BloodTest(client_ip=request.META['REMOTE_ADDR'],
+                                       pdf_file=blood_test_form['pdf_file'].value())
+            new_blood_test.save()
+            parsing_function(new_blood_test.pdf_file.name, new_blood_test)
+            return HttpResponse(new_blood_test.parsing_result)
         raise exceptions.BadRequest()
     else:
         blood_test_form = BloodTestForm()
