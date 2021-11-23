@@ -1,4 +1,12 @@
-﻿## Инструкция по запуску API на локальном хосте #
+﻿## Установка ПО, необходимого для работы парсера
+
+- Java
+- Tesseract (с языковым пакетом), установленный в папку  (
+  - Скачать установщик [здесь](https://github.com/UB-Mannheim/tesseract/wiki)
+  - Установить в папку analysis-processing\restapi\parsers\tesseract
+  - При установке в `Additional language data` обязательно выбрать пункт `Russian`
+
+## Инструкция по запуску API на локальном хосте
 
 При первом открытии проекта в Pycharm и подключении к нему интерпретатора Python в проекте должна была сгенерироваться
 папка venv (виртуальная область Python)
@@ -16,27 +24,24 @@
   и пароль (два раза))
 - `python manage.py runserver` (запуск сервера)
 
-### Взаимодействие с API:  
+### Взаимодействие с API:
+
 - Административная панель: переход по [localhost:8000/admin/](http://localhost:8000/admin/):
-- Получение результатов парсинга без сохранения в базу данных (возможна задержка): 
-  - Метод GET (Адрес: [localhost:8000](http://localhost:8000/)) или переход по [localhost:8000](http://localhost:8000/): Форма с полем для отправки PDF
-  - Метод POST (Поля: {pdf_file: файл}; Адрес: [localhost:8000](http://localhost:8000/)) или отправка формы: Результат парсинга отправленного PDF
-- Получение результатов парсинга с сохранением в базу данных (id результатов возвращается мнгновенно, поле модели parsing_completed станет True после завершения парсинга)
-  - Метод GET (Адрес: [localhost:8000/blood-tests/](http://localhost:8000/blood-tests/)) или переход по [localhost:8000/blood-tests/](http://localhost:8000/blood-tests/): Список PDF файлов, результат парсинга которых сохранен в базу данных
-  - Метод POST (Поля: {pdf_file: файл}; Адрес: [localhost:8000/blood-tests/](http://localhost:8000/blood-tests/)): ID результатов парсинга отправленного PDF
-  - Метод GET (Адрес: [localhost:8000/blood-tests/id/](http://localhost:8000/blood-tests/id/)) или переход по [localhost:8000/blood-tests/id/](http://localhost:8000/blood-tests/id/): Результат парсинга PDF файла (хранящийся по ID)
-
-## Инструкция для подключения Tesseract OCR к проекту
-
- Скачать Java; 
- Скачать установщик Tesseract [здесь](https://github.com/UB-Mannheim/tesseract/wiki) и установить в папку
-analysis-processing\analysis_ocr\tesseract (при установке в `Additional language data` обязательно выбрать пункт `Russian` и при необходимости создать папку tesseract)
-
-## Инструкция по использованию скрипта
-1. Необходимый файл (в формате .jpg/.pdf) положить в папку с программой
-2. Запустить программу через PyCharm
-3. Ввести в консоль полное название файла (включая расширение)
-4. Получить на выходе файл "done.csv", содержащий обработанную таблицу
+- Получение результатов парсинга в ответе (возможна задержка):
+    - Метод GET (Адрес: [localhost:8000](http://localhost:8000/)) или переход
+      по [localhost:8000](http://localhost:8000/): Форма с полем для отправки PDF
+    - Метод POST (Поля: {pdf_file: файл}; Адрес: [localhost:8000](http://localhost:8000/)) или отправка формы: Результат
+      парсинга отправленного PDF
+- Получение результатов парсинга по id (id результатов возвращается мнгновенно, поле модели
+  parsing_completed станет True после завершения парсинга)
+    - Метод GET (Адрес: [localhost:8000/blood-tests/](http://localhost:8000/blood-tests/)) или переход
+      по [localhost:8000/blood-tests/](http://localhost:8000/blood-tests/): Список PDF файлов, результат парсинга
+      которых сохранен в базу данных
+    - Метод POST (Поля: {pdf_file: файл}; Адрес: [localhost:8000/blood-tests/](http://localhost:8000/blood-tests/)): ID
+      результатов парсинга отправленного PDF
+    - Метод GET (Адрес: [localhost:8000/blood-tests/id/](http://localhost:8000/blood-tests/id/)) или переход
+      по [localhost:8000/blood-tests/id/](http://localhost:8000/blood-tests/id/): Результат парсинга PDF файла (
+      хранящийся по ID)
 
 ## Как запустить контейнер Docker
 
