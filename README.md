@@ -1,7 +1,7 @@
 ﻿## Установка ПО, необходимого для работы парсера
 
 - Java
-- Tesseract (с языковым пакетом), установленный в папку  (
+- Tesseract:
   - Скачать установщик [здесь](https://github.com/UB-Mannheim/tesseract/wiki)
   - Установить в папку analysis-processing\restapi\parsers\tesseract
   - При установке в `Additional language data` обязательно выбрать пункт `Russian`
