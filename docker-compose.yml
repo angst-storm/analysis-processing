@@ -1,19 +1,10 @@
-version: "1"
+version: "3.3"
 
 services:
-  tes:
-    build: ./tesseract-ocr
-    volumes:
-      - .:/code
-
   web:
     build: .
     command: python manage.py runserver 0.0.0.0:8000
-    volumes:
-      - .:/code
     environment:
       - DEBUG=False
     ports:
       - "8000:8000"
-    depends_on:
-      - tes

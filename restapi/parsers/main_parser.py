@@ -6,6 +6,7 @@ import shutil
 import platform
 import img2pdf
 from .image2csv import convert_image_to_csv
+from .pdf_to_jpg import convert_pdf_to_jpg
 
 def __convert_pdf2jpg_single(jarPath, inputpath, outputpath, dpi, pages):
     try:
