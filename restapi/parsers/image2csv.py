@@ -6,6 +6,7 @@ import table_ocr.ocr_image
 import table_ocr.ocr_to_csv
 import pytesseract
 
+
 def convert_image_to_csv(image_filepath):
     pytesseract.pytesseract.tesseract_cmd = r'parsers/tesseract\tesseract.exe'
     print(image_filepath)
