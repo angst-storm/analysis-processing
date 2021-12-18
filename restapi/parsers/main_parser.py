@@ -2,17 +2,17 @@ import os
 import os
 import shutil
 
-from image2csv import convert_image_to_csv
-from optimizer import optimize_output
-from file_preparer import prepare_file
-from garbage_collector import collect_garbage
-from csv_writer import write_csv
+from .image2csv import convert_image_to_csv
+from .optimizer import optimize_output
+from .file_preparer import prepare_file
+from .garbage_collector import collect_garbage
+from .csv_writer import write_csv
 
 show_advanced_output = False
 # Эта штука ответственная за удаление цели после обработки
 delete_file = True
 
-
+#TODO: Не работают пути к временным данным. Сборщик мусора выдает ошибку. При загрузке пдф без таблицы ошибка с NoneType
 def log(s):
     # В будущем возможно добавим логи
     if show_advanced_output:

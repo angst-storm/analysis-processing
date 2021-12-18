@@ -1,6 +1,6 @@
 import os
 
-from pdf_to_jpg import convert_pdf_to_jpg
+from .pdf_to_jpg import convert_pdf_to_jpg
 
 
 def prepare_file(filepath):
