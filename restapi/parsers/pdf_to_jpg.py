@@ -8,8 +8,10 @@ from pdf2image import convert_from_path
 
 def convert_pdf_to_jpg(input_path, output_path, dpi):
     pages = convert_from_path(input_path, dpi=dpi, poppler_path=os.path.abspath("/poppler-21.11.0/Library/bin"))
-
+    if not os.path.exists(output_path + f'/temporary_data'):
+        os.mkdir(output_path + f'/temporary_data')
     output_path = output_path + f'/temporary_data/{input_path.split("/")[-1].split(".")[0]}'
+
     os.mkdir(output_path)
 
     pages_counter = 0
