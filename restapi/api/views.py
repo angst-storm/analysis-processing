@@ -1,13 +1,14 @@
 from .forms import BloodTestForm
 from .models import BloodTest
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from rest_framework import generics
 from .serializers import BloodTestSerializer
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 from django.core import exceptions
 from threading import Thread
-from parsers.main_parser import parse_pdf
+from parsers.gag_parser import parse_pdf
+from rest_framework.renderers import JSONRenderer
 
 
 class BloodTestList(generics.ListCreateAPIView):
@@ -22,7 +23,7 @@ class BloodTestList(generics.ListCreateAPIView):
             new_blood_test.save()
             Thread(target=parsing_function,
                    args=(new_blood_test.pdf_file.name, new_blood_test)).start()
-            return HttpResponse(new_blood_test.id)
+            return HttpResponse(JSONRenderer().render({'id': new_blood_test.id}))
         raise exceptions.BadRequest()
 
 
@@ -46,8 +47,15 @@ def blood_test_detail(request):
                                        pdf_file=blood_test_form['pdf_file'].value())
             new_blood_test.save()
             parsing_function(new_blood_test.pdf_file.name, new_blood_test)
-            return HttpResponse(new_blood_test.parsing_result)
+            return HttpResponse(JSONRenderer().render(BloodTestSerializer(new_blood_test).data))
         raise exceptions.BadRequest()
     else:
-        blood_test_form = BloodTestForm()
-        return render(request, 'test_form.html', {'form': blood_test_form, 'error': blood_test_form})
+        return render(request, 'form.html')
+
+
+def widget_style(request):
+    pass
+
+
+def widget_script(request):
+    pass
