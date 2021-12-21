@@ -8,11 +8,12 @@ from .file_preparer import prepare_file
 from .garbage_collector import collect_garbage
 from .csv_writer import write_csv
 
-show_advanced_output = False
+show_advanced_output = True
 # Эта штука ответственная за удаление цели после обработки
 delete_file = True
 
-#TODO: Не работают пути к временным данным. Сборщик мусора выдает ошибку. При загрузке пдф без таблицы ошибка с NoneType
+#TODO: При загрузке пдф без таблицы ошибка с NoneType
+#TODO: Полнейшая ж*** при загрузке картинок! Пофиксить. ПДФ работает нормально (кроме пункта выше)
 def log(s):
     # В будущем возможно добавим логи
     if show_advanced_output:
@@ -27,7 +28,6 @@ def parse_pdf(filepath):
 
     log('\nОбработка файла...')
     filepath = prepare_file(filepath)
-
     if filepath != original_filepath:
         ispdf = True
 
