@@ -1,5 +1,5 @@
 let widgetManager = {
-    init: async function (id) {
+    init: function (id) {
         let widget = document.getElementById(id);
         widget.innerHTML = this.widgetCode;
         let form = widget.querySelector("form");
