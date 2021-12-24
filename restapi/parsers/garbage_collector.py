@@ -8,11 +8,9 @@ def collect_garbage(original_filepath, filepath, delete_file, ispdf):
     # Удаление папки с картинкой после конвертации в jpg
     # Даст строку вида "\restapi\temporary_data\target_hI7CZ3G"
     # -4 это расширение и точка, -7 это "\page_1"
-    shutil.rmtree(f'{filepath[:len(filepath) - 4 - 7]}')
+    if ispdf:
+        shutil.rmtree(f'{filepath[:len(filepath) - 4 - 7]}')
 
-
-    # Скорее всего надо инвертировать флаг и чето с ним делать
-    # сейчас с пдф все работает нормально (без кода ниже)
-
-    #if ispdf:
-    #    shutil.rmtree(os.getcwd()+f'\\{original_filepath}'.replace('/', '\\'))
+    if not ispdf:
+        print(os.getcwd()+f'\\{original_filepath}'.replace('/', '\\')[:-4])
+        shutil.rmtree(os.getcwd()+f'\\{original_filepath}'.replace('/', '\\')[:-4])
