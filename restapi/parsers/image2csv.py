@@ -6,11 +6,12 @@ import table_ocr.ocr_image
 import table_ocr.ocr_to_csv
 import pytesseract
 
+
 def convert_image_to_csv(image_filepath):
+    # Эта функция отвечает за распознавание текста с таблицы
+    # Возвращает CSV в виде строки
     pytesseract.pytesseract.tesseract_cmd = r'parsers/tesseract\tesseract.exe'
-    print(image_filepath)
     image_tables = table_ocr.extract_tables.main([image_filepath])
-    print(image_tables)
     for image, tables in image_tables:
         print(f"Processing tables for {image}.")
         for table in tables:
