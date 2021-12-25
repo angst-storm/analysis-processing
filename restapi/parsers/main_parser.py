@@ -1,48 +1,45 @@
 import os
-import os
-import shutil
-
+from .pdf2jpg import convert_pdf_to_jpg
 from .image2csv import convert_image_to_csv
 from .optimizer import optimize_output
-from .file_preparer import prepare_file
 from .garbage_collector import collect_garbage
-from .csv_writer import write_csv
 
+# включение логирования
 show_advanced_output = True
-# Эта штука ответственная за удаление оригинального файла после обработки
+# удаление оригинального файла
 delete_file = True
-# Нужно ли создавать csv?
+# сохранение результата в csv
 create_csv = False
 
-#TODO: При загрузке пдф без таблицы ошибка с NoneType
-#TODO: Полнейшая ж*** при загрузке картинок! Пофиксить. ПДФ работает нормально (кроме пункта выше)
+
+# TODO: добавить логирование
 def log(s):
-    # В будущем возможно добавим логи
     if show_advanced_output:
-        print(s)
+        print(f'{s}\n')
 
 
-def parse_pdf(filepath):
-    ispdf = False
-    log('Запуск...')
-    original_filepath = filepath
+# TODO: при загрузке pdf без таблицы ошибка с NoneType
+def parse_pdf(original_filepath):
+    # TODO: более разумный способ проверки на pdf, расширение может быт побито, но файл оставаться pdf
+    is_pdf = original_filepath[len(original_filepath) - 3:] == 'pdf'
 
-    log('\nОбработка файла...')
-    filepath = prepare_file(filepath)
-    if original_filepath[len(original_filepath) - 3:] == 'pdf':
-        ispdf = True
+    log('Обработка файла...')
+    filepath = convert_pdf_to_jpg(original_filepath, os.getcwd(),
+                                  100) if is_pdf else f'{os.getcwd()}\\{original_filepath}'.replace('/', '\\')
 
-    log('\nЗапуск распознавающего модуля...')
+    log('Запуск распознавающего модуля...')
     csv_output_str = convert_image_to_csv(filepath)
 
-    # На данном этапе "оптимизация" съедает запятые, что ломает файл
-    #log('\nОптимизация текста...')
-    #optimized_csv_output_str = optimize_output(csv_output_str)
-    optimized_csv_output_str = csv_output_str
+    # TODO: оптимизация "съедает" запятые, исправить
+    # log('\nОптимизация текста...')
+    # csv_output_str = optimize_output(csv_output_str)
 
-    log('\nЗапись CSV файла...')
-    write_csv(optimized_csv_output_str, create_csv)
+    if create_csv:
+        log('Запись CSV файла...')
+        with open('parser/done.csv', 'w') as file:
+            file.write(csv_output_str)
 
-    log("\nУдаление лишних файлов...")
-    collect_garbage(original_filepath, filepath, delete_file, ispdf)
-    return optimized_csv_output_str
+    log("Удаление лишних файлов...")
+    collect_garbage(original_filepath, filepath, delete_file, is_pdf)
+
+    return csv_output_str

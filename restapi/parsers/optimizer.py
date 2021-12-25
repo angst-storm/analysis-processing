@@ -2,6 +2,7 @@ import Levenshtein
 
 show_advanced_output = False
 
+
 def optimize_output(csv_output_str):
     optimized_csv_output_str = ''
     lines = csv_output_str.replace('\r', '').lower().split('\n')
