@@ -7,7 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 from django.core import exceptions
 from threading import Thread
-from parsers.main_parser import parse_pdf
+from parsers.gag_parser import parse_pdf
 from rest_framework.renderers import JSONRenderer
 
 
