@@ -1,25 +1,18 @@
 ﻿## Установка ПО, необходимого для работы парсера
 
-- Java
 - Tesseract:
-  - Скачать установщик [здесь](https://github.com/UB-Mannheim/tesseract/wiki)
-  - Установить в папку analysis-processing\restapi\parsers\tesseract
-  - При установке в `Additional language data` обязательно выбрать пункт `Russian`
+    - Скачать установщик [здесь](https://github.com/UB-Mannheim/tesseract/wiki)
+    - Установить в папку analysis-processing\restapi\parsers\tesseract
 
 ## Инструкция по запуску API на локальном хосте
 
-При первом открытии проекта в Pycharm и подключении к нему интерпретатора Python в проекте должна была сгенерироваться
-папка venv (виртуальная область Python)
-
-Также при первом открытии проекта Pycharm должен автоматически загрузить библиотеки, перечисленные в requirements.txt,
-если этого не произошло, установите их при помощи Python Packages вручную
+Открыть проект, назначить или сгенерировать виртуальную область Python, установить зависимости из `requirements.txt`. В
+папку analysis-processing положить секретный файл с виртуальными переменными `.env` (доступен только разработчикам).
 
 ### Далее команды для терминала Python:
 
 - `cd restapi` (переход в папку restapi)
-- `python manage.py makemigrations` (при помощи файла-мененджера создаются миграции моделей данных для базы данных)
-- `python manage.py migrate` (созданные миграции переносятся в базу данных)  
-  *(команды выше необходимо вводить при каждом изменении моделей)*
+- `python manage.py migrate` (создается база данных и внутри ее генерируются необходимые таблицы)
 - `python manage.py createsuperuser` (запускается процесс регистрации пользователя, в следующих поля введите ник, почту
   и пароль (два раза))
 - `python manage.py runserver` (запуск сервера)
@@ -32,8 +25,8 @@
       по [localhost:8000](http://localhost:8000/): Форма с полем для отправки PDF
     - Метод POST (Поля: {pdf_file: файл}; Адрес: [localhost:8000](http://localhost:8000/)) или отправка формы: Результат
       парсинга отправленного PDF
-- Получение результатов парсинга по id (id результатов возвращается мнгновенно, поле модели
-  parsing_completed станет True после завершения парсинга)
+- Получение результатов парсинга по id (id результатов возвращается мнгновенно, поле модели parsing_completed станет
+  True после завершения парсинга)
     - Метод GET (Адрес: [localhost:8000/blood-tests/](http://localhost:8000/blood-tests/)) или переход
       по [localhost:8000/blood-tests/](http://localhost:8000/blood-tests/): Список PDF файлов, результат парсинга
       которых сохранен в базу данных
@@ -42,6 +35,27 @@
     - Метод GET (Адрес: [localhost:8000/blood-tests/id/](http://localhost:8000/blood-tests/id/)) или переход
       по [localhost:8000/blood-tests/id/](http://localhost:8000/blood-tests/id/): Результат парсинга PDF файла (
       хранящийся по ID)
+
+Также те же возможности доступны в открытом доступе по
+адресу [https://analysis-processing.herokuapp.com/](https://analysis-processing.herokuapp.com/).
+
+### Виджеты
+
+Код для вставки виджета на страницу:
+
+```html
+<div id="unique-id"></div>
+<script src="https://analysis-processing.herokuapp.com/static/widget.js" type="text/javascript"></script>
+<script type="text/javascript">
+    widgetManager.init("unique-id");
+</script>
+```
+
+При желании, "unique-id" можно заменить на любой другой уникальный id (заменить необходимо в двух местах). 
+
+Для взаимодействия с результатом работы API в объекте widgetManager предусмотрен метод actionWithResult(res), принимающий на
+вход десериализованный объект ответа. Достаточно переопределить этот метод объекта (по умолчанию метод выводит
+всплывающее окно alert с результатом парсинга).
 
 ## Как запустить контейнер Docker
 
