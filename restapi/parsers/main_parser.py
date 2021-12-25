@@ -25,7 +25,7 @@ def parse_pdf(original_filepath):
 
     log('Обработка файла...')
     filepath = convert_pdf_to_jpg(original_filepath, os.getcwd(),
-                                  100) if is_pdf else f'{os.getcwd()}\\{original_filepath}'.replace('/', '\\')
+                                  400) if is_pdf else f'{os.getcwd()}\\{original_filepath}'.replace('/', '\\')
 
     log('Запуск распознавающего модуля...')
     csv_output_str = convert_image_to_csv(filepath)

@@ -19,7 +19,10 @@ def convert_image_to_csv(image_filepath) -> str:
         str - полученная csv
     """
     pytesseract.pytesseract.tesseract_cmd = r'parsers/tesseract\tesseract.exe'
-    image_tables = table_ocr.extract_tables.main([image_filepath])
+    try:
+        image_tables = table_ocr.extract_tables.main([image_filepath])
+    except TypeError:
+        raise ImageException
     for image, tables in image_tables:
         print(f"Processing tables for {image}.")
         for table in tables:
@@ -31,6 +34,12 @@ def convert_image_to_csv(image_filepath) -> str:
             ]
             print("Extracted {} cells from {}".format(len(ocr), table))
             return table_ocr.ocr_to_csv.text_files_to_csv(ocr)
+
+
+class ImageException(Exception):
+    def __init__(self, message='Не удалось найти изображение или таблицы в нём'):
+        self.message = message
+        super().__init__(self.message)
 
 
 # Консольная утилита, для запуска ввести: python image2csv.py {название файла, лежащего в директории} {название файла - результата парсинга}
