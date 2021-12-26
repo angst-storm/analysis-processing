@@ -4,7 +4,7 @@
 
 ## Установка ПО, необходимого для работы парсера
 
-#### Tesseract:
+#### Tesseract
 1. Скачать установщик [здесь](https://github.com/UB-Mannheim/tesseract/wiki)
 2. Установить в папку `analysis-processing\restapi\parsers\tesseract`
 
