@@ -15,7 +15,7 @@ let widgetManager = {
         alert(res['parsing_result'])
     },
     widgetCode:
-        '<form method="post" action="https://analysis-processing.herokuapp.com/" enctype="multipart/form-data"\n' +
+        '<form method="post" action="http://127.0.0.1:8000/" enctype="multipart/form-data"\n' +
         '      style="' +
         'display: flex;' +
         'flex-direction: column;' +

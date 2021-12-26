@@ -3,6 +3,9 @@
 - Tesseract:
     - Скачать установщик [здесь](https://github.com/UB-Mannheim/tesseract/wiki)
     - Установить в папку analysis-processing\restapi\parsers\tesseract
+- Poppler 
+    - Скачать архив по [ссылке](https://drive.google.com/u/0/uc?id=1WU8SBkhBv_wx-dcNvztpaONI3_N29Cnj&export=download)
+    - Распаковать в папку analysis-processing\restapi\parsers
 
 ## Инструкция по запуску API на локальном хосте
 
