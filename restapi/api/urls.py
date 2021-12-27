@@ -10,3 +10,4 @@ urlpatterns = [
     path('blood-tests/<int:pk>/', views.BloodTestDetail.as_view()),
 ] + static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS)
 
+urlpatterns = format_suffix_patterns(urlpatterns)
