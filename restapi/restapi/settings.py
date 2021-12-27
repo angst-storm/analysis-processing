@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'api.apps.ApiConfig',
     'parsers.apps.ParsersConfig',
     'corsheaders',
-    'drf_yasg',
 ]
 
 MIDDLEWARE = [

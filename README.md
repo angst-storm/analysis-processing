@@ -2,6 +2,9 @@
 
 Весь функционал доступен по адресу [https://analysis-processing.herokuapp.com/](https://analysis-processing.herokuapp.com/).
 
+## Документация сервиса
+Документация кода на OpenAPI(Swagger) находится [тут](https://app.swaggerhub.com/apis-docs/Helloeverybody/AnalysisProject/v1#/blood-tests/blood-tests_read)
+
 ## Установка ПО, необходимого для работы парсера
 
 #### Tesseract
