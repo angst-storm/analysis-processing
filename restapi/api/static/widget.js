@@ -26,7 +26,7 @@ let widgetManager = {
         'min-height: 50px;' +
         'border-image: 10 repeating-linear-gradient(135deg,red,red 10px,transparent 10px,transparent 20px,whitesmoke 20px,whitesmoke 30px,transparent 30px,transparent 40px);">\n' +
         '    <label>PDF-файл:\n' +
-        '        <input type="file" name="pdf_file" required>\n' +
+        '        <input type="file" name="client_file" required>\n' +
         '    </label><br>\n' +
         '    <input type="submit">\n' +
         '</form>'

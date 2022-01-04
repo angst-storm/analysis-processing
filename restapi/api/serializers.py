@@ -5,4 +5,4 @@ from .models import BloodTest
 class BloodTestSerializer(serializers.ModelSerializer):
     class Meta:
         model = BloodTest
-        fields = ['id', 'client_ip', 'submit', 'pdf_file', 'parsing_completed', 'parsing_result']
+        fields = ['id', 'client_ip', 'submit', 'client_file', 'parsing_completed', 'parsing_result']

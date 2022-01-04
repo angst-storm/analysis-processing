@@ -1,2 +1,2 @@
-def parse_pdf(filepath):
+def parse(filepath):
     return 'Excellent!'

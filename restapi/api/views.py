@@ -7,14 +7,13 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 from django.core import exceptions
 from threading import Thread
-from parsers.main_parser import parse_pdf
 from rest_framework.renderers import JSONRenderer
 
 
-def parsing_function(file, test):
-    test.parsing_result = parse_pdf(file)
-    test.parsing_completed = True
-    test.save()
+def parsing_function(blood_test):
+    blood_test.launch_parsing()
+    blood_test.remove_file()
+    blood_test.save()
 
 
 class BloodTestList(generics.ListCreateAPIView):
@@ -25,10 +24,10 @@ class BloodTestList(generics.ListCreateAPIView):
         blood_test_form = BloodTestForm(request.POST, request.FILES)
         if blood_test_form.is_valid():
             new_blood_test = BloodTest(client_ip=request.META['REMOTE_ADDR'],
-                                       pdf_file=blood_test_form['pdf_file'].value())
+                                       client_file=blood_test_form['client_file'].value())
             new_blood_test.save()
-            Thread(target=parsing_function,
-                   args=(new_blood_test.pdf_file.name, new_blood_test)).start()
+            Thread(target=parsing_function, args=(new_blood_test,)).start()
+            # parsing_function(new_blood_test)
             return HttpResponse(JSONRenderer().render({'id': new_blood_test.id}))
         raise exceptions.BadRequest()
 
@@ -44,9 +43,9 @@ def blood_test_detail(request):
         blood_test_form = BloodTestForm(request.POST, request.FILES)
         if blood_test_form.is_valid():
             new_blood_test = BloodTest(client_ip=request.META['REMOTE_ADDR'],
-                                       pdf_file=blood_test_form['pdf_file'].value())
+                                       client_file=blood_test_form['client_file'].value())
             new_blood_test.save()
-            parsing_function(new_blood_test.pdf_file.name, new_blood_test)
+            parsing_function(new_blood_test)
             return HttpResponse(JSONRenderer().render(BloodTestSerializer(new_blood_test).data))
         raise exceptions.BadRequest()
     else:

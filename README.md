@@ -25,9 +25,11 @@
 
 1. `cd restapi` _(переход в папку restapi)_
 2. `python manage.py migrate` _(создается база данных и внутри ее генерируются необходимые таблицы)_
-3. `python manage.py createsuperuser` _(запускается процесс регистрации пользователя, в следующих поля введите ник, почту
+3. `python manage.py collectstatic` _(собирает все статические файлы в одну папку)_
+4. `python manage.py createsuperuser` _(запускается процесс регистрации пользователя, в следующих поля введите ник, почту
   и пароль)_
-4. `python manage.py runserver` _(запуск сервера)_
+5. `python manage.py runserver` _(запуск сервера)_
+6. `python manage.py test` _(запуск тестов для моделей хранения данных и представления API)_
 
 ### Взаимодействие с API:
 
@@ -37,13 +39,13 @@
 #### Получение результатов парсинга в ответе (возможна задержка)
 - Метод GET (Адрес: [localhost:8000](http://localhost:8000/)) или переход
       по [localhost:8000](http://localhost:8000/): Форма с полем для отправки PDF
-- Метод POST (Поля: {pdf_file: файл}; Адрес: [localhost:8000](http://localhost:8000/)) или отправка формы: Результат
+- Метод POST (Поля: {client_file: файл}; Адрес: [localhost:8000](http://localhost:8000/)) или отправка формы: Результат
       парсинга отправленного PDF
       
 #### Получение результатов парсинга по id
 - Метод GET ([localhost:8000/blood-tests/](http://localhost:8000/blood-tests/)) или переход по адресу вернет список PDF файлов, результат парсинга
       которых сохранен в базу данных
-- Метод POST (Поля: {pdf_file: файл}, Адрес: [http://localhost:8000/blood-tests/](http://localhost:8000/blood-tests/)) вернет ID
+- Метод POST (Поля: {client_file: файл}, Адрес: [http://localhost:8000/blood-tests/](http://localhost:8000/blood-tests/)) вернет ID
       результатов парсинга отправленного PDF
 - Метод GET ([http://localhost:8000/blood-tests/id/](http://localhost:8000/blood-tests/id/)) или переход по адресу вернет результат парсинга PDF файла _(хранящийся по ID)_
 

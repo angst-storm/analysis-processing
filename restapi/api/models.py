@@ -1,10 +1,22 @@
 from django.db import models
 from django.utils import timezone
+from parsers import main_parser, gag_parser
+import os
 
 
 class BloodTest(models.Model):
-    client_ip = models.CharField(max_length=80, default='unknown ip')
     submit = models.DateTimeField(default=timezone.now)
-    pdf_file = models.FileField(upload_to="parsers/", default="")
+    client_ip = models.CharField(max_length=45, default='unknown ip')
+    client_file = models.FileField(upload_to="parsers/", default="")
     parsing_completed = models.BooleanField(default=False)
     parsing_result = models.TextField(default='no result')
+
+    def launch_parsing(self):
+        self.parsing_result = (main_parser if bool(os.environ.get('NON_GAG', False)) else gag_parser).parse(self.client_file.name)
+        self.parsing_completed = True
+
+    def remove_file(self):
+        os.remove(str(self.client_file))
+
+    def __str__(self):
+        return f'BloodTest (ID={self.id}, IP={self.client_ip}, parsed={self.parsing_completed})'

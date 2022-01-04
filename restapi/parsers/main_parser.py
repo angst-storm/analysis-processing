@@ -6,8 +6,6 @@ from .garbage_collector import collect_garbage
 
 # включение логирования
 show_advanced_output = True
-# удаление оригинального файла
-delete_file = True
 # сохранение результата в csv
 create_csv = False
 
@@ -19,7 +17,7 @@ def log(s):
 
 
 # TODO: при загрузке pdf без таблицы ошибка с NoneType
-def parse_pdf(original_filepath):
+def parse(original_filepath):
     # TODO: более разумный способ проверки на pdf, расширение может быт побито, но файл оставаться pdf
     is_pdf = original_filepath[len(original_filepath) - 3:] == 'pdf'
 
@@ -40,6 +38,6 @@ def parse_pdf(original_filepath):
             file.write(csv_output_str)
 
     log("Удаление лишних файлов...")
-    collect_garbage(original_filepath, filepath, delete_file, is_pdf)
+    collect_garbage(original_filepath, filepath, is_pdf)
 
     return csv_output_str
