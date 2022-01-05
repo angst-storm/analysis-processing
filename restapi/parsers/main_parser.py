@@ -1,43 +1,74 @@
+import pathlib
+import sys
 import os
-from .pdf2jpg import convert_pdf_to_jpg
-from .image2csv import convert_image_to_csv
-from .optimizer import optimize_output
-from .garbage_collector import collect_garbage
-
-# включение логирования
-show_advanced_output = True
-# сохранение результата в csv
-create_csv = False
-
-
-# TODO: добавить логирование
-def log(s):
-    if show_advanced_output:
-        print(f'{s}\n')
+import re
+from PIL.Image import Image
+from pdf2image import convert_from_path
+import table_ocr.util
+import table_ocr.pdf_to_images
+import table_ocr.extract_tables
+import table_ocr.extract_cells
+import table_ocr.ocr_image
+import table_ocr.ocr_to_csv
+import pytesseract
+import shutil
 
 
-# TODO: при загрузке pdf без таблицы ошибка с NoneType
-def parse(original_filepath):
-    # TODO: более разумный способ проверки на pdf, расширение может быт побито, но файл оставаться pdf
-    is_pdf = original_filepath[len(original_filepath) - 3:] == 'pdf'
+# TODO: добавить оптимизацию текста
+# TODO: реализовать менее костыльную валидацию PDF
+def parse(filepath):
+    split = re.split('[./]', filepath)
+    name, extension = split[-2], split[-1]
 
-    log('Обработка файла...')
-    filepath = convert_pdf_to_jpg(original_filepath, os.getcwd(),
-                                  400) if is_pdf else f'{os.getcwd()}\\{original_filepath}'.replace('/', '\\')
+    print(f'{name}: [', end='')
+    work_dir = f'parsers/temporary_data/{name}'
+    os.mkdir(work_dir)
 
-    log('Запуск распознавающего модуля...')
-    csv_output_str = convert_image_to_csv(filepath)
+    if extension == 'pdf':
+        print('Convert PDF to PNG | ', end='')
+        image_paths = pdf_to_image(filepath, work_dir)
+    else:
+        image_path = f'{work_dir}/page_1.{extension}'
+        shutil.copy(filepath, image_path)
+        image_paths = [image_path]
 
-    # TODO: оптимизация "съедает" запятые, исправить
-    # log('\nОптимизация текста...')
-    # csv_output_str = optimize_output(csv_output_str)
+    print('Tables search | ', end='')
+    pytesseract.pytesseract.tesseract_cmd = r'parsers\tesseract\tesseract.exe'
+    image_tables = table_ocr.extract_tables.main(image_paths)
+    if len(image_tables) == 0:
+        print('No tables found | ', end='')
+        print('Garbage cleaning]')
+        shutil.rmtree(work_dir)
+        raise ValueError
 
-    if create_csv:
-        log('Запись CSV файла...')
-        with open('parser/done.csv', 'w') as file:
-            file.write(csv_output_str)
+    print('Tables parsing | ', end='')
+    csv_output_str = tables_to_csv(image_tables)
 
-    log("Удаление лишних файлов...")
-    collect_garbage(original_filepath, filepath, is_pdf)
+    print('Garbage cleaning]')
+    shutil.rmtree(work_dir)
 
     return csv_output_str
+
+
+def pdf_to_image(filepath, work_dir):
+    image_paths = []
+    pages = convert_from_path(filepath, dpi=400, poppler_path=os.getcwd() + r"/parsers/poppler-21.11.0/Library/bin")
+    for index, page in enumerate(pages):
+        image_path = pathlib.Path(f'{work_dir}/page_{index}.png')
+        Image.save(page, image_path)
+        image_paths.append(str(image_path))
+    return image_paths
+
+
+def tables_to_csv(image_tables):
+    result = ''
+    for image, tables in image_tables:
+        for table in tables:
+            cells = table_ocr.extract_cells.main(table)
+            ocr = [table_ocr.ocr_image.main(cell, tess_args=["--psm", "7", "-l", "rus", "tessdata"]) for cell in cells]
+            result += table_ocr.ocr_to_csv.text_files_to_csv(ocr)
+    return result
+
+
+if __name__ == '__main__':
+    print(parse(sys.argv[1]))

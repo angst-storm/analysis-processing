@@ -8,7 +8,13 @@ let widgetManager = {
             fetch(form.action, {
                 method: 'POST',
                 body: new FormData(form),
-            }).then(res => res.json().then(this.actionWithResult));
+            }).then(res => res.json().then(res => {
+                if (res['table_found'] === false) {
+                    widget.querySelector('p').innerText = 'Какая-то ошибка. Попробуйте еще раз:'
+                } else {
+                    this.actionWithResult(res);
+                }
+            }));
         });
     },
     actionWithResult: function (res) {
@@ -25,6 +31,7 @@ let widgetManager = {
         'text-align: center;min-width: 350px;' +
         'min-height: 50px;' +
         'border-image: 10 repeating-linear-gradient(135deg,red,red 10px,transparent 10px,transparent 20px,whitesmoke 20px,whitesmoke 30px,transparent 30px,transparent 40px);">\n' +
+        '<p style="margin-top: 0;">Загрузите свои результаты анализов:</p>\n' +
         '    <label>PDF-файл:\n' +
         '        <input type="file" name="client_file" required>\n' +
         '    </label><br>\n' +
