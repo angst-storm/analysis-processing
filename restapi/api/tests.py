@@ -6,24 +6,15 @@ from .models import BloodTest
 
 
 class BloodTestModelTest(TestCase):
-    @classmethod
-    def setUpTestData(cls):
-        BloodTest.objects.create(client_ip='127.0.0.1',
-                                 client_file=File(open('parsers/testfiles/test.pdf', 'rb'), 'test.pdf'))
-        BloodTest.objects.create(client_ip='127.0.0.1',
-                                 client_file=File(open('parsers/testfiles/without_table.pdf', 'rb'),
-                                                  'without_table.pdf'))
-        BloodTest.objects.create(client_ip='127.0.0.1',
-                                 client_file=File(open('parsers/testfiles/multipages.pdf', 'rb'), 'multipages.pdf'))
-        BloodTest.objects.create(client_ip='127.0.0.1',
-                                 client_file=File(open('parsers/testfiles/test.pdf', 'rb'), 'test.pdf'))
+    @staticmethod
+    def create_blood_test(filename):
+        return BloodTest.objects.create(client_ip='127.0.0.1',
+                                        client_file=File(open(f'parsers/testfiles/{filename}', 'rb'),
+                                                         f'{filename}'))
 
     @classmethod
-    def tearDownClass(cls):
-        BloodTest.objects.get(id=1).remove_file()
-        BloodTest.objects.get(id=2).remove_file()
-        BloodTest.objects.get(id=3).remove_file()
-        super(BloodTestModelTest, cls).tearDownClass()
+    def setUpTestData(cls):
+        cls.create_blood_test('test.pdf')
 
     def test_labels(self):
         fields_labels = {'client_ip': 'client ip',
@@ -58,27 +49,41 @@ class BloodTestModelTest(TestCase):
         blood_test = BloodTest.objects.get(id=1)
         self.assertTrue(os.path.exists(str(blood_test.client_file)))
 
-    def launch_test_parsing(self, test_id):
-        blood_test = BloodTest.objects.get(id=test_id)
+    def launch_test_parsing(self, blood_test):
         self.assertFalse(blood_test.parsing_completed)
         self.assertEquals(blood_test.parsing_result, 'no result')
         blood_test.launch_parsing()
         self.assertTrue(blood_test.parsing_completed)
-        return blood_test
+        blood_test.remove_file()
 
     def test_parsing(self):
-        blood_test = self.launch_test_parsing(1)
+        blood_test = BloodTest.objects.get(id=1)
+        self.launch_test_parsing(blood_test)
+        self.assertTrue(blood_test.table_found)
+        self.assertNotEquals(blood_test.parsing_result, 'no result')
+
+    def test_parsing_image(self):
+        blood_test = self.create_blood_test('test.jpg')
+        self.launch_test_parsing(blood_test)
         self.assertTrue(blood_test.table_found)
         self.assertNotEquals(blood_test.parsing_result, 'no result')
 
     def test_parsing_without_table(self):
-        blood_test = self.launch_test_parsing(2)
+        blood_test = self.create_blood_test('without_table.pdf')
+        self.launch_test_parsing(blood_test)
         if bool(os.environ.get('NON_GAG', False)):
             self.assertFalse(blood_test.table_found)
             self.assertEquals(blood_test.parsing_result, 'no result')
 
-    def test_parsing_multilines(self):
-        blood_test = self.launch_test_parsing(3)
+    def test_parsing_multipages(self):
+        blood_test = self.create_blood_test('multipages.pdf')
+        self.launch_test_parsing(blood_test)
+        self.assertTrue(blood_test.table_found)
+        self.assertNotEquals(blood_test.parsing_result, 'no result')
+
+    def test_parsing_rus_file(self):
+        blood_test = self.create_blood_test('рус_тест.pdf')
+        self.launch_test_parsing(blood_test)
         self.assertTrue(blood_test.table_found)
         self.assertNotEquals(blood_test.parsing_result, 'no result')
 
@@ -88,7 +93,7 @@ class BloodTestModelTest(TestCase):
                               f'BloodTest (ID={test.id}, IP={test.client_ip}, parsed={test.parsing_completed})')
 
     def test_file_remove(self):
-        blood_test = BloodTest.objects.get(id=4)
+        blood_test = self.create_blood_test('test.pdf')
         self.assertTrue(os.path.exists(str(blood_test.client_file)))
         blood_test.remove_file()
         self.assertFalse(os.path.exists(str(blood_test.client_file)))

@@ -1,13 +1,18 @@
+import os
 from django.db import models
 from django.utils import timezone
 from parsers import main_parser, gag_parser
-import os
+from transliterate import translit
+
+
+def get_filename(instance, filename):
+    return f'parsers/{translit(filename, "ru", reversed=True)}'
 
 
 class BloodTest(models.Model):
     submit = models.DateTimeField(default=timezone.now)
     client_ip = models.CharField(max_length=45, default='unknown ip')
-    client_file = models.FileField(upload_to="parsers/", default="")
+    client_file = models.FileField(upload_to=get_filename, default="")
     parsing_completed = models.BooleanField(default=False)
     table_found = models.BooleanField(default=False)
     parsing_result = models.TextField(default='no result')
