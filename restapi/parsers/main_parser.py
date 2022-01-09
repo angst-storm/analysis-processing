@@ -13,6 +13,9 @@ from Levenshtein import distance
 
 app_dir = 'parsers/'
 
+lev_terms = []
+with open(f'{app_dir}lev_terms.txt') as f:
+    lev_terms = f.readlines()
 
 # TODO: заменить список терминов для оптимизатора
 # TODO: реализовать менее костыльную валидацию PDF (если возможно)
@@ -25,7 +28,7 @@ def parse(filepath):
     os.mkdir(work_dir)
 
     if extension == 'pdf':
-        print('Convert PDF to PNG | ', end='')
+        print('Converting PDF to PNG | ', end='')
         image_paths = pdf_to_image(filepath, work_dir)
     else:
         print('Document is image | ', end='')
@@ -33,7 +36,7 @@ def parse(filepath):
         shutil.copy(filepath, image_path)
         image_paths = [image_path]
 
-    print('Tables search | ', end='')
+    print('Tables searching | ', end='')
     pytesseract.tesseract_cmd = f'{app_dir}tesseract/tesseract.exe'
     image_tables = extract_tables.main(image_paths)
     if len(image_tables) == 0:
@@ -75,6 +78,7 @@ def tables_to_csv(image_tables):
 
 
 def optimize_table(table):
+    """Оптимизация всего распознанного текста"""
     lines = csv.reader(table.split('\r\n'))
     opt_lines = [[optimize_word(word) for word in line] for line in lines]
     opt_table = StringIO()
@@ -83,15 +87,16 @@ def optimize_table(table):
 
 
 def optimize_word(word):
+    """Оптимизация слова. Если при распознавании в слове была допущена небольшая ошибка, то это поможет всё исправить"""
+    global lev_terms
     opt_distance = 5
-    terms = ['лейкоциты', 'лимфоциты', 'моноциты',
-             'нейтрофилы', 'эозинофилы', 'базофилы',
-             'эритроциты', 'гемоглобин', 'гематокрит',
-             'тромбоциты']
-    opt_word = min([(distance(word.lower(), term), term) for term in terms], key=lambda t: t[0])
+    opt_word = min([(distance(word.lower(), term), term) for term in lev_terms], key=lambda t: t[0])
     return opt_word[1] if opt_word[0] <= opt_distance else word
 
 
 if __name__ == '__main__':
     app_dir = ''
+    lev_terms = []
+    with open('lev_terms.txt') as f:
+        lev_terms = f.readlines()
     print(parse(sys.argv[1]))
