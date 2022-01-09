@@ -13,17 +13,20 @@ from Levenshtein import distance
 
 app_dir = 'parsers/'
 
-lev_terms = []
-with open(f'{app_dir}lev_terms.txt') as f:
-    lev_terms = f.readlines()
+if os.path.exists(f'{app_dir}lev_terms.txt'):
+    with open(f'{app_dir}lev_terms.txt') as f:
+        lev_terms = [term.strip() for term in f.readlines()]
 
-# TODO: заменить список терминов для оптимизатора
-# TODO: реализовать менее костыльную валидацию PDF (если возможно)
+
 def parse(filepath):
     split = re.split('[./]', filepath)
     name, extension = split[-2], split[-1]
 
-    print(f'{name}: [', end='')
+    print(f'{name}.{extension}: [', end='')
+
+    if not os.path.exists(f'{app_dir}temporary_data'):
+        os.mkdir(f'{app_dir}temporary_data')
+
     work_dir = f'{app_dir}temporary_data/{name}'
     os.mkdir(work_dir)
 
@@ -88,7 +91,6 @@ def optimize_table(table):
 
 def optimize_word(word):
     """Оптимизация слова. Если при распознавании в слове была допущена небольшая ошибка, то это поможет всё исправить"""
-    global lev_terms
     opt_distance = 5
     opt_word = min([(distance(word.lower(), term), term) for term in lev_terms], key=lambda t: t[0])
     return opt_word[1] if opt_word[0] <= opt_distance else word
@@ -96,7 +98,6 @@ def optimize_word(word):
 
 if __name__ == '__main__':
     app_dir = ''
-    lev_terms = []
-    with open('lev_terms.txt') as f:
-        lev_terms = f.readlines()
+    with open(f'lev_terms.txt') as f:
+        lev_terms = [term.strip() for term in f.readlines()]
     print(parse(sys.argv[1]))
