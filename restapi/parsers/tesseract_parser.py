@@ -13,9 +13,9 @@ from Levenshtein import distance
 
 app_dir = 'parsers/'
 
-if os.path.exists(f'{app_dir}lev_terms.txt'):
-    with open(f'{app_dir}lev_terms.txt') as f:
-        lev_terms = [term.strip() for term in f.readlines()]
+if os.path.exists(f'{app_dir}levenshtein_dict.txt'):
+    with open(f'{app_dir}levenshtein_dict.txt') as f:
+        levenshtein_dict = [term.strip() for term in f.readlines()]
 
 
 def parse(filepath):
@@ -92,12 +92,12 @@ def optimize_table(table):
 def optimize_word(word):
     """Оптимизация слова. Если при распознавании в слове была допущена небольшая ошибка, то это поможет всё исправить"""
     opt_distance = 5
-    opt_word = min([(distance(word.lower(), term), term) for term in lev_terms], key=lambda t: t[0])
+    opt_word = min([(distance(word.lower(), term), term) for term in levenshtein_dict], key=lambda t: t[0])
     return opt_word[1] if opt_word[0] <= opt_distance else word
 
 
 if __name__ == '__main__':
     app_dir = ''
-    with open(f'lev_terms.txt') as f:
-        lev_terms = [term.strip() for term in f.readlines()]
+    with open('levenshtein_dict.txt') as f:
+        levenshtein_dict = [term.strip() for term in f.readlines()]
     print(parse(sys.argv[1]))
