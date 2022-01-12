@@ -22,11 +22,29 @@ class PixelScanTest(TestCase):
 
 
 class CropperTest(TestCase):
-    def test_crop_all(self):
-        get_cropped_images('УГМК', 'parsers/testfiles/ugmk/converted/page_0.png')
-        for lab, lab_dir in [('Ситилаб', 'citilab'), ('INVITRO', 'invitro'), ('KDL', 'kdl'), ('Гемотест', 'gemotest')]:
-            get_cropped_images(lab, f'parsers/testfiles/{lab_dir}/converted/page_0.png')
-            get_cropped_images(lab, f'parsers/testfiles/{lab_dir}/converted/page_1.png')
+    @staticmethod
+    def crop_lab(lab, lab_dir, pages):
+        for page in pages:
+            get_cropped_images(lab, f'parsers/testfiles/{lab_dir}/converted/page_{page}.png')
+
+    def test_ugmk(self):
+        self.crop_lab('УГМК', 'ugmk', [0])
+        self.assertTrue(True)
+
+    def test_citilab(self):
+        self.crop_lab('Ситилаб', 'citilab', [0, 1])
+        self.assertTrue(True)
+
+    def test_invitro(self):
+        self.crop_lab('INVITRO', 'invitro', [0, 1])
+        self.assertTrue(True)
+
+    def test_kdl(self):
+        self.crop_lab('KDL', 'kdl', [0, 1])
+        self.assertTrue(True)
+
+    def test_gemotest(self):
+        self.crop_lab('Гемотест', 'gemotest', [0, 1])
         self.assertTrue(True)
 
 
