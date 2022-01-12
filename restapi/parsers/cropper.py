@@ -75,8 +75,8 @@ def get_cropped_images(target, image_path):
             # получаем из одной картинки изображения трех колонок таблицы (имя, значение, ед. изм.) путем разрезания
             # изображения по константным значениям углов таблицы
             image.crop(get_cropped_coords(target_to_crop_data[target][int(image_path[-5])][i], image)).save(
-                image_path[:len(image_path) - 4] + f'-{image_path[-5]}-{i}.png')
-            result.append(image_path[:len(image_path) - 4] + f'-{image_path[-5]}-{i}.png')
+                f'{image_path[:-4]}-{i}.png')
+            result.append(f'{image_path[:-4]}-{i}.png')
 
     return result
 
