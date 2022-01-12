@@ -1,5 +1,33 @@
 from django.test import TestCase
+from .pixelscan import get_scan_result
+from .cropper import get_cropped_images
 from .formatter import format_table
+
+
+class PixelScanTest(TestCase):
+    def test_ugmk(self):
+        self.assertEquals(get_scan_result('parsers/testfiles/ugmk/converted/page_0.png'), 'УГМК')
+
+    def test_citilab(self):
+        self.assertEquals(get_scan_result('parsers/testfiles/citilab/converted/page_0.png'), 'Ситилаб')
+
+    def test_invitro(self):
+        self.assertEquals(get_scan_result('parsers/testfiles/invitro/converted/page_0.png'), 'INVITRO')
+
+    def test_kdl(self):
+        self.assertEquals(get_scan_result('parsers/testfiles/kdl/converted/page_0.png'), 'KDL')
+
+    def test_gemotest(self):
+        self.assertEquals(get_scan_result('parsers/testfiles/gemotest/converted/page_0.png'), 'Гемотест')
+
+
+class CropperTest(TestCase):
+    def test_crop_all(self):
+        get_cropped_images('УГМК', 'parsers/testfiles/ugmk/converted/page_0.png')
+        for lab, lab_dir in [('Ситилаб', 'citilab'), ('INVITRO', 'invitro'), ('KDL', 'kdl'), ('Гемотест', 'gemotest')]:
+            get_cropped_images(lab, f'parsers/testfiles/{lab_dir}/converted/page_0.png')
+            get_cropped_images(lab, f'parsers/testfiles/{lab_dir}/converted/page_1.png')
+        self.assertTrue(True)
 
 
 class FormatterTest(TestCase):
@@ -14,8 +42,8 @@ class FormatterTest(TestCase):
     def test_ugmk(self):
         self.lab_test('parsers/testfiles/ugmk/parsed.csv', 'УГМК', 'parsers/testfiles/ugmk/formatted.csv')
 
-    def test_citylab(self):
-        self.lab_test('parsers/testfiles/citylab/parsed.csv', 'Ситилаб', 'parsers/testfiles/citylab/formatted.csv')
+    def test_citilab(self):
+        self.lab_test('parsers/testfiles/citilab/parsed.csv', 'Ситилаб', 'parsers/testfiles/citilab/formatted.csv')
 
     def test_invitro(self):
         self.lab_test('parsers/testfiles/invitro/parsed.csv', 'INVITRO', 'parsers/testfiles/invitro/formatted.csv')
@@ -23,5 +51,5 @@ class FormatterTest(TestCase):
     def test_kdl(self):
         self.lab_test('parsers/testfiles/kdl/parsed.csv', 'KDL', 'parsers/testfiles/kdl/formatted.csv')
 
-    def test_hemotest(self):
-        self.lab_test('parsers/testfiles/hemotest/parsed.csv', 'Гемотест', 'parsers/testfiles/hemotest/formatted.csv')
+    def test_gemotest(self):
+        self.lab_test('parsers/testfiles/gemotest/parsed.csv', 'Гемотест', 'parsers/testfiles/gemotest/formatted.csv')

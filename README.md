@@ -31,7 +31,7 @@
 1. `cd restapi` _(переход в папку restapi)_
 2. `python manage.py migrate` _(создается база данных и внутри ее генерируются необходимые таблицы)_
 3. `python manage.py collectstatic` _(собирает все статические файлы в одну папку)_
-4. `python manage.py createsuperuser` _(запускается процесс регистрации пользователя, в следующих поля введите ник,
+4. `python manage.py createsuperuser` _(запускается процесс регистрации пользователя, в следующих полях введите ник,
    почту и пароль)_
 5. `python manage.py runserver` _(запуск сервера)_
 
