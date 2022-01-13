@@ -2,11 +2,11 @@ import numpy as np
 import cv2
 
 get_logo_path = {
-    'Гемотест':'parsers/logo/GEMOTEST_LOGO.png',
-    'INVITRO':'parsers/logo/INVITRO_LOGO.png',
-    'KDL': 'parsers/logo/KDL_LOGO.png',
-    'Ситилаб': 'parsers/logo/SITILAB_LOGO.png',
-    'УГМК': 'parsers/logo/UGMK_LOGO.png',
+    'Гемотест':'logo/GEMOTEST_LOGO.png',
+    'INVITRO':'logo/INVITRO_LOGO.png',
+    'KDL': 'logo/KDL_LOGO.png',
+    'Ситилаб': 'logo/SITILAB_LOGO.png',
+    'УГМК': 'logo/UGMK_LOGO.png',
 }
 
 def is_image_from_company(img_rgb, company):
