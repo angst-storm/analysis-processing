@@ -5,7 +5,10 @@ import pandas as pd
 from io import StringIO
 from Levenshtein import distance
 
-indicators = pd.read_csv('parsers/indicators.csv')
+if os.path.exists('indicators.csv'):
+    indicators = pd.read_csv('indicators.csv')
+elif os.path.exists('parsers/indicators.csv'):
+    indicators = pd.read_csv('parsers/indicators.csv')
 
 
 def format_table(table, lab):

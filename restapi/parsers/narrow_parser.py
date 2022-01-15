@@ -3,48 +3,56 @@ import re
 import sys
 import shutil
 import pathlib
+import pandas as pd
 import tabula
 from PIL import Image
 from pdf2image import convert_from_path
 from pixel_scanner import get_scan_result
+from values_cropper import crop_images
 from table_optimizer import optimize_table
 from table_formatter import format_table
+from pytesseract import pytesseract
+from table_ocr import extract_tables, extract_cells, ocr_image, ocr_to_csv
 
 app_dir = 'parsers/'
 
 
 def parse(filepath):
-    # берем имя и расширение документа
     split = re.split(r'[./\\]', filepath)
     name, extension = split[-2], split[-1]
 
-    # создаем папки для сохранения промежуточных файлов
     work_dir = f'{app_dir}temporary_data/{name}'
     os.mkdir(work_dir)
     os.mkdir(f'{work_dir}/images')
 
-    # в зависимости от расширения документа производим конвертации (pdf в image или наоборот)
     if extension == 'pdf':
         pdf_path = f'{work_dir}/document.pdf'
         shutil.copy(filepath, pdf_path)
-        image_paths = pdf_to_image(filepath, work_dir)
+        images_paths = pdf_to_image(filepath, work_dir)
+        lab = get_scan_result(images_paths[0])
+        if lab == 'unknown':
+            table = tesseract_parse(images_paths)
+            shutil.rmtree(work_dir)
+            return table
+        if lab == 'KDL':
+            table = crop_tesseract_parse(images_paths, lab)
+        else:
+            table = tabula_parse(pdf_path, lab)
+            table = optimize_table(table, lab)
     else:
-        pdf_path = image_to_pdf(filepath, work_dir)
         image_path = f'{work_dir}/images/page_0.{extension}'
         shutil.copy(filepath, image_path)
-        image_paths = [image_path]
+        images_paths = [image_path]
+        lab = get_scan_result(images_paths[0])
+        if lab in ['unknown', 'INVITRO', 'Гемотест']:
+            table = tesseract_parse(images_paths)
+            shutil.rmtree(work_dir)
+            return table
+        else:
+            table = crop_tesseract_parse(images_paths, lab)
 
-    # получаем название лаборатории, где произведен анализ
-    lab = get_scan_result(image_paths[0])
-
-    # запускаем распознание при помощи tabula
-    table = tabula_parse(pdf_path, lab)
-    # оптимизируем таблицу (меняем заголовки, убираем лишние знаки, ячейки и т.д.)
-    table = optimize_table(table, lab)
-    # приводим таблицу к единому формату
     table = format_table(table, lab)
 
-    # удаляем промежуточные файлы
     shutil.rmtree(work_dir)
 
     return table
@@ -74,6 +82,36 @@ def tabula_parse(path, lab):
     dataframes = tabula.read_pdf(path, pages="all", multiple_tables=True, stream=stream, lattice=lattice, guess=True)
 
     return ''.join([df.to_csv(index=None) for df in dataframes])
+
+
+if os.path.exists('labs.csv'):
+    labs = pd.read_csv('labs.csv')
+elif os.path.exists('parsers/labs.csv'):
+    labs = pd.read_csv('parsers/labs.csv')
+
+
+def crop_tesseract_parse(images_paths, lab):
+    if lab in ['УГМК', 'Ситилаб', 'KDL']:
+        crops = crop_images(images_paths, lab)
+        pytesseract.tesseract_cmd = f'{app_dir}tesseract/tesseract.exe'
+        values = ''.join([pytesseract.image_to_string(crop) for crop in crops])
+        values = [v for v in values.split('\n') if len(v.strip()) != 0 and not re.match('[a-zA-Z]', v)]
+        table = pd.DataFrame(zip(labs[f'{lab} indicator'], values, labs[f'{lab} unit']), columns=['indicator', 'value', 'unit'])
+        return table
+    else:
+        raise NotImplementedError
+
+
+def tesseract_parse(images_paths):
+    pytesseract.tesseract_cmd = f'{app_dir}tesseract/tesseract.exe'
+    image_tables = extract_tables.main(images_paths)
+    result = ''
+    for image, tables in image_tables:
+        for table in tables:
+            cells = extract_cells.main(table)
+            ocr = [ocr_image.main(cell, tess_args=["--psm", "7", "-l", "rus", "tessdata"]) for cell in cells]
+            result += ocr_to_csv.text_files_to_csv(ocr)
+    return result
 
 
 if __name__ == '__main__':

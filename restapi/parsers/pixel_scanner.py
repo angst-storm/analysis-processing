@@ -24,4 +24,4 @@ def get_scan_result(image_path):
     for company in logos_paths.keys():
         if is_image_from_company(img_rgb, company):
             return company
-    return 'UNKNOWN'
+    return 'unknown'
