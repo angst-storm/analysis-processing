@@ -5,13 +5,10 @@ import pandas as pd
 from io import StringIO
 from Levenshtein import distance
 
-if os.path.exists('parsers/indicators.csv'):
-    indicators = pd.read_csv('parsers/indicators.csv')
+indicators = pd.read_csv('parsers/indicators.csv')
 
 
-def format_table(lab, table):
-    table = pd.read_csv(StringIO(table))
-
+def format_table(table, lab):
     table_dict = {}
     levenshtein = indicators[lab].dropna()
     for index, item in table.iterrows():
@@ -33,8 +30,3 @@ def format_word(word, levenshtein_dict):
     opt_distance = 5
     opt_word = min([(distance(word, term), term) for term in levenshtein_dict], key=lambda t: t[0])
     return opt_word[1] if opt_word[0] <= opt_distance else word
-
-
-if __name__ == '__main__':
-    indicators = pd.read_csv('indicators.csv')
-    print(format_table(sys.argv[1], open(sys.argv[2], encoding='utf-8').read()))

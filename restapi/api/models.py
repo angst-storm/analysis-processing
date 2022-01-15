@@ -1,7 +1,7 @@
 import os
 from django.db import models
 from django.utils import timezone
-from parsers import tesseract_parser, gag_parser
+from parsers import tesseract_parser, gag_parser, narrow_parser
 from transliterate import translit
 
 
@@ -19,7 +19,7 @@ class BloodTest(models.Model):
 
     def launch_parsing(self):
         try:
-            self.parsing_result = (tesseract_parser if bool(os.environ.get('NON_GAG', False)) else gag_parser).parse(self.client_file.name)
+            self.parsing_result = (narrow_parser if bool(os.environ.get('NON_GAG', False)) else gag_parser).parse(self.client_file.name)
         except ValueError:
             self.table_found = False
         else:

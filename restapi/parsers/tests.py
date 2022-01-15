@@ -1,7 +1,9 @@
+import pandas as pd
 from django.test import TestCase
-from .pixelscan import get_scan_result
-from .cropper import get_cropped_images
-from .formatter import format_table
+from .pixel_scanner import get_scan_result
+from .table_formatter import format_table
+from .narrow_parser import tabula_parse
+from .table_optimizer import optimize_table
 
 
 class PixelScanTest(TestCase):
@@ -21,37 +23,10 @@ class PixelScanTest(TestCase):
         self.assertEquals(get_scan_result('parsers/testfiles/gemotest/converted/page_0.png'), 'Гемотест')
 
 
-class CropperTest(TestCase):
-    @staticmethod
-    def crop_lab(lab, lab_dir, pages):
-        for page in pages:
-            get_cropped_images(lab, f'parsers/testfiles/{lab_dir}/converted/page_{page}.png')
-
-    def test_ugmk(self):
-        self.crop_lab('УГМК', 'ugmk', [0])
-        self.assertTrue(True)
-
-    def test_citilab(self):
-        self.crop_lab('Ситилаб', 'citilab', [0, 1])
-        self.assertTrue(True)
-
-    def test_invitro(self):
-        self.crop_lab('INVITRO', 'invitro', [0, 1])
-        self.assertTrue(True)
-
-    def test_kdl(self):
-        self.crop_lab('KDL', 'kdl', [0, 1])
-        self.assertTrue(True)
-
-    def test_gemotest(self):
-        self.crop_lab('Гемотест', 'gemotest', [0, 1])
-        self.assertTrue(True)
-
-
 class FormatterTest(TestCase):
     def lab_test(self, test_file_path, lab, expected_path):
-        with open(test_file_path, encoding='utf-8') as test_file, open(expected_path, encoding='utf-8') as expected:
-            test_file = format_table(lab, test_file.read())
+        with open(expected_path, encoding='utf-8') as expected:
+            test_file = format_table(pd.read_csv(test_file_path, encoding='utf-8'), lab)
             expected = expected.read()
 
             for t, e in zip(test_file.split('\r\n'), expected.split('\n')):
@@ -71,3 +46,25 @@ class FormatterTest(TestCase):
 
     def test_gemotest(self):
         self.lab_test('parsers/testfiles/gemotest/parsed.csv', 'Гемотест', 'parsers/testfiles/gemotest/formatted.csv')
+
+
+class TabulaParserTest(TestCase):
+    def parse(self, test_file_path, lab, expected_path):
+        with open(expected_path, encoding='utf-8') as expected:
+            test_file = format_table(optimize_table(tabula_parse(test_file_path, lab), lab), lab).split('\r\n')
+            expected = expected.read().split('\n')
+
+            for t, e in zip(test_file, expected):
+                self.assertEquals(t, e)
+
+    def test_ugmk(self):
+        self.parse('parsers/testfiles/ugmk/initial.pdf', 'УГМК', 'parsers/testfiles/ugmk/formatted.csv')
+
+    def test_citilab(self):
+        self.parse('parsers/testfiles/citilab/initial.pdf', 'Ситилаб', 'parsers/testfiles/citilab/formatted.csv')
+
+    def test_invitro(self):
+        self.parse('parsers/testfiles/invitro/initial.pdf', 'INVITRO', 'parsers/testfiles/invitro/formatted.csv')
+
+    def test_gemotest(self):
+        self.parse('parsers/testfiles/gemotest/initial.pdf', 'Гемотест', 'parsers/testfiles/gemotest/formatted.csv')
