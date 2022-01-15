@@ -8,6 +8,7 @@ from pdf2image import convert_from_path
 from .pixelscan import get_scan_result
 from .cropper import get_cropped_images
 from .formatter import format_table
+from .tabula_parser import get_table_from_images
 
 app_dir = 'parsers/'
 
@@ -31,12 +32,12 @@ def parse(filepath):
         shutil.copy(filepath, image_path)
         image_paths = [image_path]
 
+    print(image_paths[0])
+
     lab = get_scan_result(image_paths[0])
 
-    cropped_images_paths = [get_cropped_images(img_path, lab) for img_path in image_paths]
-
     # TODO: метод, возвращающий csv представление распознанных столбцов
-    table = ''
+    table = get_table_from_images(image_paths[0], lab)
 
     table = format_table(lab, table)
 
@@ -54,5 +55,4 @@ def pdf_to_image(filepath, work_dir):
 
 
 if __name__ == '__main__':
-    app_dir = ''
     print(parse(sys.argv[1]))
