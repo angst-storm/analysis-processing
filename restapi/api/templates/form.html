@@ -12,8 +12,20 @@
             width: 100%;
             height: 100%;
             display: flex;
-            justify-content: center;
             align-items: center;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        table {
+            border-collapse: collapse;
+            margin: 10px;
+            font-size: 15px;
+        }
+
+        td {
+            border: 1px solid black;
+            padding: 10px;
         }
     </style>
 </head>
@@ -24,6 +36,54 @@
     <script type="text/javascript">
         widgetManager.init("unique-id");
     </script>
+    <table class="parsing-statuses">
+    </table>
+    <table class="parsing-result">
+    </table>
 </div>
+
+<script>
+    widgetManager.actionWithResult = function (res) {
+        let parsing_statuses = document.querySelector('.parsing-statuses');
+        parsing_statuses.innerHTML = '<tr><td>Таблицы найдены</td><td>Таблица отформатирована</td><td>Лаборатория</td></tr>' +
+            `<tr><td>${res['table_found']}</td><td>${res['table_formatted']}</td><td>${res['laboratory']}</td></tr>`
+        let parsing_result = document.querySelector('.parsing-result');
+        parsing_result.innerHTML = csv_to_html(res['parsing_result']);
+    }
+
+    function csv_to_html(data) {
+        let allRows = data.split(/\r?\n|\r/);
+        let table = '';
+        for (let singleRow = 0; singleRow < allRows.length - 1; singleRow++) {
+            if (singleRow === 0) {
+                table += '<thead>';
+                table += '<tr>';
+            } else {
+                table += '<tr>';
+            }
+            let rowCells = allRows[singleRow].split(',');
+            for (let rowCell = 0; rowCell < rowCells.length; rowCell++) {
+                if (singleRow === 0) {
+                    table += '<th>';
+                    table += rowCells[rowCell];
+                    table += '</th>';
+                } else {
+                    table += '<td>';
+                    table += rowCells[rowCell];
+                    table += '</td>';
+                }
+            }
+            if (singleRow === 0) {
+                table += '</tr>';
+                table += '</thead>';
+                table += '<tbody>';
+            } else {
+                table += '</tr>';
+            }
+        }
+        table += '</tbody>';
+        return table;
+    }
+</script>
 </body>
 </html>

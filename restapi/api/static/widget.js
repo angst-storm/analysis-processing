@@ -11,7 +11,10 @@ let widgetManager = {
             }).then(res => res.json().then(res => {
                 if (res['table_found'] === false) {
                     widget.querySelector('p').innerText = 'Какая-то ошибка. Попробуйте еще раз:'
+                    widget.querySelector('form').style.backgroundColor = 'pink';
                 } else {
+                    widget.querySelector('p').innerText = 'Загрузите свои результаты анализов:'
+                    widget.querySelector('form').style.backgroundColor = 'lightblue';
                     this.actionWithResult(res);
                 }
             }));

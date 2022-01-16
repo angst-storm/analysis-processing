@@ -21,6 +21,9 @@ def parse(filepath):
     split = re.split(r'[./\\]', filepath)
     name, extension = split[-2], split[-1]
 
+    if not os.path.exists(f'{app_dir}temporary_data'):
+        os.mkdir(f'{app_dir}temporary_data')
+
     work_dir = f'{app_dir}temporary_data/{name}'
     os.mkdir(work_dir)
     os.mkdir(f'{work_dir}/images')
