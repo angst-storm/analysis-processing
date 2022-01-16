@@ -40,5 +40,6 @@ def optimize_table(table, lab):
     else:
         raise NotImplementedError
 
+    # TODO: падает при появлении nan в таблице
     table.value = table.value.apply(lambda v: re.sub('[*+-]', '', v))
     return table[['indicator', 'value', 'unit']]

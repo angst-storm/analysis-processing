@@ -101,7 +101,7 @@ class BloodTestModelTest(TestCase):
 
 class ViewTest(TestCase):
     tests_count = 10
-    test_fields = ['id', 'parsing_completed', 'table_found', 'parsing_result']
+    test_fields = ['id', 'parsing_completed', 'table_found', 'table_formatted', 'laboratory', 'parsing_result']
 
     @classmethod
     def setUpTestData(cls):

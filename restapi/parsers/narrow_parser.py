@@ -7,10 +7,10 @@ import pandas as pd
 import tabula
 from PIL import Image
 from pdf2image import convert_from_path
-from pixel_scanner import get_scan_result
-from values_cropper import crop_images
-from table_optimizer import optimize_table
-from table_formatter import format_table
+from .pixel_scanner import get_scan_result
+from .values_cropper import crop_images
+from .table_optimizer import optimize_table
+from .table_formatter import format_table
 from pytesseract import pytesseract
 from table_ocr import extract_tables, extract_cells, ocr_image, ocr_to_csv
 
@@ -31,9 +31,9 @@ def parse(filepath):
         images_paths = pdf_to_image(filepath, work_dir)
         lab = get_scan_result(images_paths[0])
         if lab == 'unknown':
-            table = tesseract_parse(images_paths)
+            tables_found, table = tesseract_parse(images_paths)
             shutil.rmtree(work_dir)
-            return table
+            return tables_found, False, lab, table
         if lab == 'KDL':
             table = crop_tesseract_parse(images_paths, lab)
         else:
@@ -45,9 +45,9 @@ def parse(filepath):
         images_paths = [image_path]
         lab = get_scan_result(images_paths[0])
         if lab in ['unknown', 'INVITRO', 'Гемотест']:
-            table = tesseract_parse(images_paths)
+            tables_found, table = tesseract_parse(images_paths)
             shutil.rmtree(work_dir)
-            return table
+            return tables_found, False, lab, table
         else:
             table = crop_tesseract_parse(images_paths, lab)
 
@@ -55,7 +55,7 @@ def parse(filepath):
 
     shutil.rmtree(work_dir)
 
-    return table
+    return True, True, lab, table
 
 
 def pdf_to_image(filepath, work_dir):
@@ -105,13 +105,15 @@ def crop_tesseract_parse(images_paths, lab):
 def tesseract_parse(images_paths):
     pytesseract.tesseract_cmd = f'{app_dir}tesseract/tesseract.exe'
     image_tables = extract_tables.main(images_paths)
-    result = ''
+    if len(image_tables) == 0:
+        return False, 'no result'
+    table = ''
     for image, tables in image_tables:
         for table in tables:
             cells = extract_cells.main(table)
             ocr = [ocr_image.main(cell, tess_args=["--psm", "7", "-l", "rus", "tessdata"]) for cell in cells]
-            result += ocr_to_csv.text_files_to_csv(ocr)
-    return result
+            table += ocr_to_csv.text_files_to_csv(ocr)
+    return True, table
 
 
 if __name__ == '__main__':
