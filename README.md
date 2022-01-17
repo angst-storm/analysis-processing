@@ -86,3 +86,7 @@
 
 1. Установить [Docker Desktop](https://hub.docker.com/editions/community/docker-ce-desktop-windows)
 2. Ввести команду `docker-compose -f docker-compose.yml up -d`
+
+При упаковке контейнера Java, Python, Tesseract и Poppler загружаются автоматически, поэтому нужно удалить указания путей к
+Tesseract и Poppler в файле ./restapi/parsers/tesseract_parser.py
+Сами Tesseract и Poppler так же можно удалить, в контейнере они не понадобятся

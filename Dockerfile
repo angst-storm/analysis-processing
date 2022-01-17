@@ -1,16 +1,23 @@
+# установка Python
 FROM python
-COPY --from=openjdk . ./java
+RUN apt-get update && \
+    # установка Java
+    apt-get install -y openjdk-11-jre-headless && \
+    # установка Poppler
+    apt-get install poppler-utils -y && \
+    # установка Tesseract
+    apt-get install tesseract-ocr -y  && \
+    apt-get clean
+# создание папки для файлов проекта
 RUN mkdir analysis-processing
 WORKDIR ./analysis-processing
-ENV VIRTUAL_ENV=/opt/venv
-RUN python3 -m venv $VIRTUAL_ENV
-ENV PATH="$VIRTUAL_ENV/bin:$PATH"
-RUN apt-get update
-RUN apt-get install -y python3-opencv
-COPY requirements.txt .
-RUN pip install -r ./requirements.txt
+# копирование проекта в коентейнер
 COPY . .
+# установка библиотек Python
+RUN pip install -r ./requirements.txt
 WORKDIR ./restapi
-RUN python manage.py makemigrations
+# подготовка сервера к запуску
 RUN python manage.py migrate
+RUN python manage.py collectstatic
+# открытие порта
 EXPOSE 8000
