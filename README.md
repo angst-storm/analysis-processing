@@ -20,6 +20,11 @@
 1. Скачать архив по [ссылке](https://drive.google.com/u/0/uc?id=1WU8SBkhBv_wx-dcNvztpaONI3_N29Cnj&export=download)
 2. Распаковать в папку `analysis-processing\restapi\parsers`
 
+#### Java
+
+1. Установить себе на ПК Java, скачанную по [ссылке](https://www.java.com/en/download/manual.jsp)
+2. В PATH указать путь до папки bin (в директории с Java)
+
 ## Инструкция по запуску API на локальном хосте
 
 1. Открыть проект
