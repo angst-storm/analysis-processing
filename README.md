@@ -1,12 +1,16 @@
+### Демонстрация
+
+[Telegram-канал, посвященный разработке](https://t.me/changelogforanalises)
+
+[Видеодемонстрация работы](https://drive.google.com/file/d/1Vih9ApqK_UxRU7jcahNIi-K9i-1ui863/view?usp=sharing)
+
 ### Демо
 
-Весь функционал доступен по
-адресу [https://analysis-processing.herokuapp.com/](https://analysis-processing.herokuapp.com/).
+[Демо-версия (не работает распознание)](https://analysis-processing.herokuapp.com/)
 
 ### Документация сервиса
 
-Документация кода на OpenAPI (Swagger) находится по
-адресу [https://app.swaggerhub.com/apis-docs/Helloeverybody/AnalysisProcessing/v1](https://app.swaggerhub.com/apis-docs/Helloeverybody/AnalysisProcessing/v1)
+[Документация кода на OpenAPI (Swagger)](https://app.swaggerhub.com/apis-docs/Helloeverybody/AnalysisProcessing/v1)
 
 ## Установка ПО, необходимого для работы парсера
 
