@@ -43,20 +43,20 @@
 
 #### Получение результатов парсинга в ответе (возможна задержка)
 
-- Метод GET (Адрес: [/](https://analysis-processing.herokuapp.com/)) или переход по [/](https://analysis-processing.herokuapp.com/):
+- Метод GET (Адрес: [/](https://analysis-processing.herokuapp.com/)) или переход
+  по [/](https://analysis-processing.herokuapp.com/):
   Форма с полем для отправки PDF
-- Метод POST (Поля: {client_file: файл}; Адрес: [/](https://analysis-processing.herokuapp.com/)) или отправка формы: Результат
-  парсинга отправленного PDF
+- Метод POST (Поля: {client_file: файл}; Адрес: [/](https://analysis-processing.herokuapp.com/)) или отправка формы:
+  Результат парсинга отправленного PDF
 
 #### Получение результатов парсинга по id
 
-- Метод GET ([/blood-tests/](https://analysis-processing.herokuapp.com/blood-tests/)) или переход по адресу вернет список PDF
-  файлов, результат парсинга которых сохранен в базу данных
-- Метод POST (Поля: {client_file: файл},
-  Адрес: [/blood-tests/](https://analysis-processing.herokuapp.com/blood-tests/)) вернет ID результатов парсинга
-  отправленного PDF
-- Метод GET ([/blood-tests/id/](https://analysis-processing.herokuapp.com/blood-tests/id/)) или переход по адресу
-  вернет результат парсинга PDF файла (хранящийся по ID)
+- Метод GET ([/blood-tests/](https://analysis-processing.herokuapp.com/blood-tests/)) или переход по адресу вернет
+  список PDF файлов, результат парсинга которых сохранен в базу данных
+- Метод POST (Поля: {client_file: файл}, Адрес: [/blood-tests/](https://analysis-processing.herokuapp.com/blood-tests/))
+  вернет ID результатов парсинга отправленного PDF
+- Метод GET ([/blood-tests/id/](https://analysis-processing.herokuapp.com/blood-tests/id/)) или переход по адресу вернет
+  результат парсинга PDF файла (хранящийся по ID)
 
 ### Виджеты
 
@@ -109,7 +109,9 @@
 
 1. Открыть проект
 2. Назначить или сгенерировать виртуальную область Python, установить зависимости из `requirements.txt`.
-3. В папку `analysis-processing` положить файл с виртуальными переменными `.env` _(доступен только разработчикам)_.
+3. В папку `analysis-processing` положить файл с виртуальными
+   переменными `.env` _[(скачать архив с файлом)](https://drive.google.com/u/0/uc?id=1gsw5wDbTpERr7nzqO7T6s1xSo25ktasv&export=download)_
+   .
 
 #### Команды для терминала Python:
 
