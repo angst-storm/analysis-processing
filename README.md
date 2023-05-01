@@ -19,8 +19,6 @@
 
 Решение поддерживает распознание общего анализа крови из пяти российских клиник (УГМК, Ситилаб, INVITRO, KDL, Гемотест).
 
-[Демо-версия (не работает распознание)](https://analysis-processing.herokuapp.com/)
-
 [Документация кода на OpenAPI (Swagger)](https://app.swaggerhub.com/apis-docs/Helloeverybody/AnalysisProcessing/v1)
 
 [Видеодемонстрация работы](https://drive.google.com/file/d/1Vih9ApqK_UxRU7jcahNIi-K9i-1ui863/view?usp=sharing)
